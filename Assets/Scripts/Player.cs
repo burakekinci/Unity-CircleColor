@@ -5,15 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
-    public string currentColor;
     public float jumpForce = 10f;
     public Rigidbody2D circle;
     public SpriteRenderer sr;
-    public Color blue, yellow, pink, purple;
     public Rigidbody2D rb;
 
-
-
+    //oyun başında rigidbody kinematicten etkilenmesin
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -23,69 +20,63 @@ public class Player : MonoBehaviour
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
+        //siyah,mavi,kırmızı,yeşil olmak üzere rastgele renk seç
         SetRandomColor();
     }
 
     void Update()
     {
+        //zıplama
         if(Input.GetButtonDown("Jump") || Input.GetMouseButtonDown(0))
         {
             rb.isKinematic = false;
             circle.velocity = Vector2.up * jumpForce;
         }
-
-
     }
 
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "colorChanger")
+        //renk değiştirme bölgesine girerse renk değiştir
+        if (collision.tag == "colorChanger")
         {
-            SetRandomColor();
             Destroy(collision.gameObject);
+            SetRandomColor();
             Debug.Log("renk değişti");
             return;
         }
-        if(collision.tag != currentColor || collision.tag == "deadzone")
+        //yanlış renk ile temas ederse veya  kamera alanından çıkarsa bölümü resetle
+        else if (collision.GetComponent<SpriteRenderer>().color != sr.color || collision.tag =="deadzone")
         {
             Debug.Log("You died");
-            StartCoroutine(ResetLevel());
-        }
-       
+            StartCoroutine(ResetLevel()); 
+        }   
     }
-
 
     void SetRandomColor()
     {
-        int rand = Random.Range(0, 3);
-
-        switch(rand)
+        int rand = Random.Range(0, 4);
+        Debug.Log("random color no" + rand);
+        switch (rand)
         {
             case 0:
-                currentColor = "blue";
-                sr.color = blue;
+                sr.color = Color.blue;
                 break;
             case 1:
-                currentColor = "yellow";
-                sr.color = yellow;
+                sr.color = Color.green;
                 break;
             case 2:
-                currentColor = "purple";
-                sr.color = purple;
+                sr.color = Color.black;
                 break;
             case 3:
-                currentColor = "pink";
-                sr.color = pink;
+                sr.color = Color.red;
                 break;
             default:
                 break;
         }
-
-
-
     }
 
+    //bölüm resetleyici
     IEnumerator ResetLevel()
     {
         this.enabled = false;
