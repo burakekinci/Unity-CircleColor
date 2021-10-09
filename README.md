@@ -1,5 +1,7 @@
 # Unity-CircleColor 
   This game is a replica of popular game
+  
+made with Unity-C#
 
 the purpose of this project is improve scripting skills
   
