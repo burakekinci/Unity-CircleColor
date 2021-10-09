@@ -1,59 +1,92 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour
 {
     public Vector3 newCirclePosition;
+    public Vector3 newChangerPosition;
     public GameObject circle;
-    public int test = 2;
-    public float gapBetweenCircles;
-    public static int score = 0;
-    public static bool isCircleCreated;
-    public static bool isChangerGot;
+    public GameObject changer;
 
-    public static int numOfCircle = 0;
-    public static int numOfChanger = 0;
+    public float gapBetweenObj;
+    public float changerOffset;
+    
+    public static int SCORE = 0;
+    
+    public static int NUM_OF_CIRCLE = 0;
+    public static int NUM_OF_CHANGER = 0;
 
-    private GameObject player;
-    private GameObject createdCircle;
+    private GameObject _createdCircle;
+    private GameObject _createdChanger;
     
     private void Awake()
     {
-        //player objesini bul
-        player = GameObject.FindGameObjectWithTag("Player");
         SpriteRenderer deadzoneSpriteRenderer = GameObject.FindGameObjectWithTag("deadzone").AddComponent<SpriteRenderer>();  
     }
 
     private void Start()
     {
+        gapBetweenObj = 10f;
+        changerOffset = 5f;
+        
         //ilk circle'ı üret
-        createdCircle = Instantiate(circle, Vector3.zero, Quaternion.identity);
-        ++numOfCircle;
-        gapBetweenCircles = 10f;
+        _createdCircle = Instantiate(circle, Vector3.zero, Quaternion.identity);
+        NUM_OF_CIRCLE++;
+
+        //ilk changer'ı üret
+        _createdChanger = Instantiate(changer, new Vector3(0, changerOffset, 0), Quaternion.identity);
+        NUM_OF_CHANGER++;
     }
 
     void Update()
     {
-       
         CreateNewCircle();
-       
+        CreateNewChanger();
+        Debug.Log("changer" + NUM_OF_CHANGER);
+        Debug.Log("circle" + NUM_OF_CIRCLE);
+
+        UpdateScore();
+    }
+
+    public void UpdateScore()
+    {
+        Text scoreUI;
+        scoreUI = GameObject.FindGameObjectWithTag("Score").GetComponent<Text>();
+        scoreUI.text = "Score: " + SCORE;
     }
 
     void CreateNewCircle()
     {
         //klon circle'ın üretildiği y değerini al
-        float posY = createdCircle.transform.position.y;
+        float posY = _createdCircle.transform.position.y;
  
         //yeni circle klon y pozisyonunu belirle
-        newCirclePosition = new Vector3(0, posY + gapBetweenCircles,0);
+        newCirclePosition = new Vector3(0, posY + gapBetweenObj,0);
 
         //yeni circle klonunu üret
-        if (numOfCircle<2)
+        if (NUM_OF_CIRCLE<2)
         {
-            createdCircle = Instantiate(circle, newCirclePosition, Quaternion.identity);
-            ++numOfCircle;
-            isCircleCreated = true;
+            _createdCircle = Instantiate(circle, newCirclePosition, Quaternion.identity);
+            NUM_OF_CIRCLE++;
+        }
+    }
+
+    void CreateNewChanger()
+    {
+        //klon changer'ın üretildiği y değerini al
+        float posY = _createdChanger.transform.position.y;
+
+        //yeni changer klon y pozisyonunu belirle
+        newChangerPosition = new Vector3(0, posY + gapBetweenObj, 0);
+
+        //yeni changer klonunu üret
+        if (NUM_OF_CHANGER <= 1)
+        {
+            Debug.Log("test");
+            _createdChanger = Instantiate(changer, newChangerPosition, Quaternion.identity);
+            NUM_OF_CHANGER++;
         }
     }
 

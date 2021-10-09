@@ -8,7 +8,7 @@ TagManager:
   - colorChanger
   - circleArmPrefab
   - levelManager
-  - newCirclePoint
+  - Score
   layers:
   - Default
   - TransparentFX

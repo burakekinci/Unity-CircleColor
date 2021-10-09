@@ -12,11 +12,11 @@ public class Circle : MonoBehaviour
     public GameObject circleArmPrefab;
 
     [HideInInspector]
-    private  GameObject circleLeftDown;
-    private  GameObject circleRightDown;
-    private  GameObject circleLeftUp;
-    private  GameObject circleRightUp;
-    private  GameObject[] circleNodes;
+    private  GameObject _circleLeftDown;
+    private  GameObject _circleRightDown;
+    private  GameObject _circleLeftUp;
+    private  GameObject _circleRightUp;
+    private  GameObject[] _circleNodes;
 
 
     // Update is called once per frame
@@ -27,18 +27,8 @@ public class Circle : MonoBehaviour
 
         //player objesini bul
         player = GameObject.FindGameObjectWithTag("Player");
-        
-        //node'ları instantiate et
-        Debug.Log("Circle objesi olusturuldu...");
-        circleRightDown = Instantiate(circleArmPrefab, _circleTransform.position, Quaternion.Euler(0, 0, 0), _circleTransform);
-        circleRightUp = Instantiate(circleArmPrefab, _circleTransform.position, Quaternion.Euler(0, 0, 90), _circleTransform);
-        circleLeftUp = Instantiate(circleArmPrefab, _circleTransform.position, Quaternion.Euler(0, 0, 180), _circleTransform);
-        circleLeftDown = Instantiate(circleArmPrefab, _circleTransform.position, Quaternion.Euler(0, 0, 270), _circleTransform);
-        Debug.Log("nodelar uretildi");
-        circleNodes = new GameObject[4] { circleRightDown, circleRightUp, circleLeftDown, circleLeftUp };
-        //siyah,mavi,kırmızı,yeşil
-        RandomColor();
-        
+
+        DesignCircle();
     }
    
     void Update()
@@ -51,11 +41,23 @@ public class Circle : MonoBehaviour
         //klon objesi player'dan yeteri kadar aşağıda kalmışsa yok et
         if(player.transform.position.y - gameObject.transform.position.y > 8f)
         {
-            LevelManager.numOfCircle--;
+            LevelManager.NUM_OF_CIRCLE--;
             Destroy(gameObject);
         }
     }
     
+    void DesignCircle()
+    {
+        //node'ları instantiate et
+        Debug.Log("Circle objesi olusturuldu...");
+        _circleRightDown = Instantiate(circleArmPrefab, _circleTransform.position, Quaternion.Euler(0, 0, 0), _circleTransform);
+        _circleRightUp = Instantiate(circleArmPrefab, _circleTransform.position, Quaternion.Euler(0, 0, 90), _circleTransform);
+        _circleLeftUp = Instantiate(circleArmPrefab, _circleTransform.position, Quaternion.Euler(0, 0, 180), _circleTransform);
+        _circleLeftDown = Instantiate(circleArmPrefab, _circleTransform.position, Quaternion.Euler(0, 0, 270), _circleTransform);
+        _circleNodes = new GameObject[4] { _circleRightDown, _circleRightUp, _circleLeftDown, _circleLeftUp };
+        //siyah,mavi,kırmızı,yeşil
+        RandomColor();
+    }
     protected void RandomColor()
     {
         //renkler dizisi
@@ -76,6 +78,7 @@ public class Circle : MonoBehaviour
         while (randomNodeMatchesPlayerColor == randomNodeMatchesChanger);
         
         Debug.Log(randomNodeMatchesPlayerColor + ". node oyuncu ile aynı renk olması lazım");
+        Debug.Log(randomNodeMatchesChanger + ". node changerile aynı renk olması lazım");
         
         //circleNoda'ları rastgele renklendir
         for (int i = 0; i < 4; i++)
@@ -83,18 +86,19 @@ public class Circle : MonoBehaviour
             if (i == randomNodeMatchesPlayerColor)
             {
                 //oyuncu ile aynı renk olması gereken node'u renklendir
-                circleNodes[i].GetComponent<SpriteRenderer>().color = player.GetComponent<SpriteRenderer>().color;
+                _circleNodes[i].GetComponent<SpriteRenderer>().color = player.GetComponent<SpriteRenderer>().color;
                 Debug.Log(i + ". node oyuncu ile aynı renk oldu");
                 continue;
             }else if(i == randomNodeMatchesChanger)
             {
                 //colorChanger ile aynı renk olması gereken node'u renklendir
                 GameObject colorChanger = GameObject.FindGameObjectWithTag("colorChanger");
-                circleNodes[i].GetComponent<SpriteRenderer>().color = colorChanger.GetComponent<SpriteRenderer>().color;
+                _circleNodes[i].GetComponent<SpriteRenderer>().color = colorChanger.GetComponent<SpriteRenderer>().color;
+                continue;
             }
             //kalan nodeları renklendir
             randomInt = Random.Range(0, circleColors.Length);
-            circleNodes[i].GetComponent<SpriteRenderer>().color = circleColors[randomInt];
+            _circleNodes[i].GetComponent<SpriteRenderer>().color = circleColors[randomInt];
             Debug.Log(i + ". node renklendi");
         }
     }
