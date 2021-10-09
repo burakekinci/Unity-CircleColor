@@ -2,76 +2,48 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class levelManager : MonoBehaviour
+public class LevelManager : MonoBehaviour
 {
-    public GameObject circlePosition;
-    GameObject parent;
-    public GameObject player;
-    GameObject circleLeftDown;
-    GameObject circleRightDown;
-    GameObject circleLeftUp;
-    GameObject circleRightUp;
-    GameObject[] circleNodes;
+    public Vector3 newCirclePosition;
+   
+    
+    public GameObject circle;
 
+    
+    public static int score = 0;
+    private GameObject player;
+    private GameObject createdCircle;
+   
+  
 
+    private void Awake()
+    {
+       SpriteRenderer deadzoneSpriteRenderer = GameObject.FindGameObjectWithTag("deadzone").AddComponent<SpriteRenderer>();  
+    }
 
-
-    public GameObject circleArmPrefab;
     private void Start()
     {
-        SpriteRenderer spriteRenderer = GameObject.FindGameObjectWithTag("deadzone").AddComponent<SpriteRenderer>();
-        
+        player = GameObject.FindGameObjectWithTag("Player");
+        createdCircle = Instantiate(circle, Vector3.zero, Quaternion.identity);
     }
-    // Update is called once per frame
+
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Debug.Log("Space pressed");
-            circleRightDown = Instantiate(circleArmPrefab, circlePosition.transform.position,Quaternion.Euler(0,0,0),     circlePosition.transform);
-            circleRightUp = Instantiate(circleArmPrefab, circlePosition.transform.position,Quaternion.Euler(0,0,90),    circlePosition.transform);
-            circleLeftUp = Instantiate(circleArmPrefab, circlePosition.transform.position,Quaternion.Euler(0,0,180),   circlePosition.transform);
-            circleLeftDown = Instantiate(circleArmPrefab, circlePosition.transform.position,Quaternion.Euler(0,0,270),   circlePosition.transform);
-            Debug.Log("nodelar uretildi");
-            circleNodes = new GameObject[4] { circleRightDown, circleRightUp, circleLeftDown, circleLeftUp };
-
-            //siyah,mavi,kırmızı,yeşil
-            RandomColor();
-        }
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            Destroy(circlePosition.transform.parent.gameObject);
-            //foreach(GameObject circleNode in circleNodes)
-            //{
-            //    Destroy(circleNode);
-            //}
-        }
+        createNewCircle();
     }
 
-    void RandomColor() 
+    void createNewCircle()
     {
-        Debug.Log("randomColor fonk calisti");
-        Color[] circleColors = new Color[4];
-        circleColors[0] = Color.black;
-        circleColors[1] = Color.blue;
-        circleColors[2] = Color.red;
-        circleColors[3] = Color.green;
-
-        int randomInt;
-        int randomNodeMatchesPlayerColor = Random.Range(0,4);
-        Debug.Log(randomNodeMatchesPlayerColor + ". node oyuncu ile aynı renk olması lazım");
-        for(int i=0;i<4;i++)
+        float posY = createdCircle.transform.position.y;
+        
+        if(createdCircle.transform.position.y - player.transform.position.y < 3f && createdCircle.transform.position.y - player.transform.position.y > 0)
         {
-            if (i == randomNodeMatchesPlayerColor)
-            {
-                circleNodes[i].GetComponent<SpriteRenderer>().color = player.GetComponent<SpriteRenderer>().color;
-                Debug.Log(i + ". node oyuncu ile aynı renk oldu");
-                continue;
-            }
-            randomInt = Random.Range(0, circleColors.Length);
-            circleNodes[i].GetComponent<SpriteRenderer>().color = circleColors[randomInt];
-            Debug.Log(i + ". node renklendi");
+            Debug.Log("BBBBB");
+            newCirclePosition = new Vector3(0, posY+10,0);
+            createdCircle = Instantiate(circle, newCirclePosition, Quaternion.identity);
         }
     }
-    
+
+   
+
 }

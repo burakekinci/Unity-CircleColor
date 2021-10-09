@@ -37,18 +37,24 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //renk değiştirme bölgesine girerse renk değiştir
+        //renk değiştirme bölgesine girerse renk değiştir ve score'u arttır
         if (collision.tag == "colorChanger")
         {
             Destroy(collision.gameObject);
             SetRandomColor();
             Debug.Log("renk değişti");
+            
+            LevelManager.score += 1;
+            Debug.Log(LevelManager.score);
             return;
         }
+
         //yanlış renk ile temas ederse veya  kamera alanından çıkarsa bölümü resetle
         else if (collision.GetComponent<SpriteRenderer>().color != sr.color || collision.tag =="deadzone")
         {
             Debug.Log("You died");
+            Debug.Log(collision.GetComponent<SpriteRenderer>().color);
+            Debug.Log(sr.color);
             StartCoroutine(ResetLevel()); 
         }   
     }

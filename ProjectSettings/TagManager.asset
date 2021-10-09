@@ -4,12 +4,11 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - blue
-  - purple
-  - pink
   - deadzone
-  - yellow
   - colorChanger
+  - circleArmPrefab
+  - levelManager
+  - newCirclePoint
   layers:
   - Default
   - TransparentFX
