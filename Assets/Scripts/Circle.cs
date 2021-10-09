@@ -22,8 +22,10 @@ public class Circle : MonoBehaviour
     // Update is called once per frame
     void Start()
     {
-        SpriteRenderer sr = gameObject.AddComponent<SpriteRenderer>();
-        _circleTransform = this.transform;
+        //her bir klon için çağrıldığı yerdeki transformu al
+        _circleTransform = gameObject.transform;
+
+        //player objesini bul
         player = GameObject.FindGameObjectWithTag("Player");
         
         //node'ları instantiate et
@@ -41,21 +43,21 @@ public class Circle : MonoBehaviour
    
     void Update()
     {
-        deleteCircle();
+        DeleteCircle();
     }
 
-    void deleteCircle()
+    void DeleteCircle()
     {
+        //klon objesi player'dan yeteri kadar aşağıda kalmışsa yok et
         if(player.transform.position.y - gameObject.transform.position.y > 8f)
         {
+            LevelManager.numOfCircle--;
             Destroy(gameObject);
         }
     }
     
     protected void RandomColor()
     {
-        Debug.Log("randomColor fonk calisti");
-        
         //renkler dizisi
         Color[] circleColors = new Color[4];
         circleColors[0] = Color.black;
@@ -64,7 +66,15 @@ public class Circle : MonoBehaviour
         circleColors[3] = Color.green;
 
         int randomInt;
-        int randomNodeMatchesPlayerColor = Random.Range(0, 4);
+        int randomNodeMatchesPlayerColor;
+        int randomNodeMatchesChanger;
+        
+        do {
+            randomNodeMatchesPlayerColor = Random.Range(0, 4);
+            randomNodeMatchesChanger = Random.Range(0, 4);
+        }
+        while (randomNodeMatchesPlayerColor == randomNodeMatchesChanger);
+        
         Debug.Log(randomNodeMatchesPlayerColor + ". node oyuncu ile aynı renk olması lazım");
         
         //circleNoda'ları rastgele renklendir
@@ -76,7 +86,13 @@ public class Circle : MonoBehaviour
                 circleNodes[i].GetComponent<SpriteRenderer>().color = player.GetComponent<SpriteRenderer>().color;
                 Debug.Log(i + ". node oyuncu ile aynı renk oldu");
                 continue;
+            }else if(i == randomNodeMatchesChanger)
+            {
+                //colorChanger ile aynı renk olması gereken node'u renklendir
+                GameObject colorChanger = GameObject.FindGameObjectWithTag("colorChanger");
+                circleNodes[i].GetComponent<SpriteRenderer>().color = colorChanger.GetComponent<SpriteRenderer>().color;
             }
+            //kalan nodeları renklendir
             randomInt = Random.Range(0, circleColors.Length);
             circleNodes[i].GetComponent<SpriteRenderer>().color = circleColors[randomInt];
             Debug.Log(i + ". node renklendi");
